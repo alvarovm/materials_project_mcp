@@ -49,6 +49,53 @@ The Materials Project API requires an API key. You can set up your API key in se
    export MP_API_KEY="your_api_key_here"
    ```
 
+## Example
+
+Here's a simple example that demonstrates how to use the MCP tools directly:
+
+```python
+import os
+import json
+from materials_project_mcp.tools import (
+    get_materials_with_elements,
+    get_material_details,
+    find_materials_by_formula
+)
+
+# Set your API key
+os.environ["MP_API_KEY"] = "your_api_key_here"
+# Or load it from a file
+# with open("~/materials_project_api.key", "r") as f:
+#     os.environ["MP_API_KEY"] = f.read().strip()
+
+# Function to print JSON data in a readable format
+def print_json(data):
+    print(json.dumps(data, indent=2))
+
+# Find materials containing Fe and O
+print("\n=== Finding materials containing Fe and O ===")
+materials = get_materials_with_elements(
+    elements=["Fe", "O"],
+    max_records=3
+)
+print_json(materials)
+
+# Get details for a specific material
+if materials:
+    material_id = materials[0]["material_id"]
+    print(f"\n=== Getting details for material {material_id} ===")
+    details = get_material_details(material_id)
+    print_json(details)
+
+# Find materials with a specific formula
+print("\n=== Finding materials with formula Fe2O3 ===")
+formula_materials = find_materials_by_formula(
+    formula="Fe2O3",
+    max_records=3
+)
+print_json(formula_materials)
+```
+
 ## Development
 
 ### Local Setup
