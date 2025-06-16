@@ -1,0 +1,39 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "materials-project-mcp"
+version = "0.1.0"
+description = "MCP tool for querying Materials Project API"
+readme = "README.md"
+authors = [
+    {name = "Materials Project MCP", email = "example@example.com"},
+]
+requires-python = ">=3.11"
+dependencies = [
+    "fastmcp>=2.7.1",
+    "mp-api>=0.30.5",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest",
+  "black",
+]
+notebook = [
+  "jupyter",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/username/materials-project-mcp"
+"Bug Tracker" = "https://github.com/username/materials-project-mcp/issues"
+
+[project.scripts]
+mp-mcp = "materials_project_mcp.main:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/materials_project_mcp"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
