@@ -1,11 +1,12 @@
 import pytest
-from unittest.mock import patch, Mock
-from materials_project_mcp.api import get_mp_client, fetch_materials_by_elements
+from unittest.mock import patch, Mock, MagicMock
+from materials_project_mcp.api import fetch_materials_by_elements
 
 
 @pytest.fixture
 def mock_mprester():
-    mock_mpr = Mock()
+    # Create a proper context manager mock
+    mock_mpr = MagicMock()
     mock_doc = Mock()
     mock_doc.dict.return_value = {
         "material_id": "mp-149",
@@ -18,22 +19,27 @@ def mock_mprester():
     }
     mock_results = [mock_doc]
     
+    # Create the nested structure with materials.summary that matches our API
     mock_summary = Mock()
-    mock_summary.search.return_value = mock_results
+    mock_summary.search = Mock(return_value=mock_results)
     
-    mock_mpr.summary = mock_summary
-    return mock_mpr
+    mock_materials = Mock()
+    mock_materials.summary = mock_summary
+    
+    mock_mpr.materials = mock_materials
+    
+    # Configure the mock to be used in a context manager
+    mock_cm = MagicMock()
+    mock_cm.__enter__.return_value = mock_mpr
+    return mock_cm
 
 
 def test_fetch_materials_by_elements(mock_mprester):
     with patch("materials_project_mcp.api.get_mp_client", return_value=mock_mprester):
-        with patch("materials_project_mcp.api.MPRester") as mock_mp_rester:
-            mock_mp_rester.return_value.__enter__.return_value = mock_mprester
-            
-            results = fetch_materials_by_elements(
-                elements=["Fe", "O"],
-                max_records=1
-            )
+        results = fetch_materials_by_elements(
+            elements=["Fe", "O"],
+            max_records=1
+        )
     
     assert len(results) == 1
     assert results[0]["material_id"] == "mp-149"
