@@ -16,6 +16,14 @@ Or using uv:
 uv pip install -e .
 ```
 
+### Installation with `uv`
+
+```bash
+git clone https://github.com/alvarovm/materials_project_mcp.git
+cd materials_project_mcp
+uv tools install .
+```
+
 ## Usage
 
 You can use the CLI:
@@ -108,6 +116,32 @@ cd materials-project-mcp
 # Install development dependencies
 uv pip install -e ".[dev]"
 ```
+
+### Adding MCP to OpenCode
+
+Locate a the full path for the `mp-mcp` binary, and get an MP API key from [materialsproject.org/api](https://next-gen.materialsproject.org/api).
+With this information you can create an `opencode.json` file and add:
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "servers": {
+       "mp-mcp": {
+         "type": "local",
+         "command": ["/path/bin/mp-mcp"],
+         "environment": {
+           "MP_API_KEY": "xxxxHERE_your_MP_APIKEYxxxx"
+         },
+         "enabled": true
+       }
+    }
+  }
+}
+```
+
+Test with 
+`Using the material project MCP, mp-mcp, Finding materials with formula Fe2O3`
 
 ### Running Tests
 
